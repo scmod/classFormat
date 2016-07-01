@@ -9,6 +9,7 @@ import java.util.List;
 import cc.funny.attr.resolvers.FieldInfoAttributeResolver;
 import cc.funny.inject.Inject;
 import cc.funny.structure.FieldInfo;
+import cc.funny.structure.InterfaceInfo;
 import cc.funny.type_value.TypeValue;
 import cc.funny.type_value.constantPool.CClass;
 import cc.funny.type_value.constantPool.CDouble;
@@ -113,20 +114,35 @@ public class Utils {
 		}
 		return context;
 	}
-	
-	public static FieldInfo analyseFields(DataInput di,
-			int fields_count) throws IOException {
-		FieldInfo fi = new FieldInfo();
-		if(fields_count > 0) {
+
+	public static List<InterfaceInfo> analyseInterfaces(DataInput di,
+			int interfaces_count) throws IOException {
+		List<InterfaceInfo> list = null;
+		if (interfaces_count > 0) {
+			list = new ArrayList<>();
+			for (int i = 0; i < interfaces_count; i++) {
+				list.add(new InterfaceInfo(di.readUnsignedShort()));
+			}
+		}
+		return list;
+	}
+
+	public static List<FieldInfo> analyseFields(DataInput di, int fields_count)
+			throws IOException {
+		List<FieldInfo> list = null;
+		if (fields_count > 0) {
+			list = new ArrayList<>();
 			for (int i = 0; i < fields_count; i++) {
+				FieldInfo fi = new FieldInfo();
 				fi.setAccess_flags(di.readUnsignedShort());
 				fi.setName_index(di.readUnsignedShort());
 				fi.setDescriptor_index(di.readUnsignedShort());
 				int attributes_count = di.readUnsignedShort();
 				fi.setAttributes(null);
+				list.add(fi);
 			}
 		}
-		return fi;
+		return list;
 	}
 
 }

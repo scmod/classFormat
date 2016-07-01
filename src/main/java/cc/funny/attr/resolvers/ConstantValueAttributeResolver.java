@@ -11,23 +11,21 @@ public class ConstantValueAttributeResolver implements
 
 	@Override
 	public ConstantValueAttribute resolve(int attribute_name_index, DataInput di) throws IOException {
-		ConstantValueAttribute cva = new ConstantValueAttribute();
-		cva.setConstantvalue_index(di.readUnsignedShort());
+		ConstantValueAttribute attr = new ConstantValueAttribute();
+		attr.setAttribute_name_index(attribute_name_index);
 		/*
 		 * The value of the attribute_length item of a ConstantValue_attribute
 		 * structure must be two
 		 */
 		di.skipBytes(4);
-		cva.setConstantvalue_index(2);
-		cva.setConstantvalue_index(di.readUnsignedShort());
-		return cva;
+		attr.setAttribute_length(2);
+		attr.setConstantvalue_index(di.readUnsignedShort());
+		return attr;
 	}
 
 	@Override
 	public boolean canHandle(int attribute_name_index) {
-		return TheClassFileFormat.cf.getConstantPool()
-				.get(attribute_name_index).getStringValue()
-				.equals("ConstantValue");
+		return canHandle(attribute_name_index, "ConstantValue");
 	}
 
 }

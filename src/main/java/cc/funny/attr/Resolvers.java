@@ -28,19 +28,18 @@ public class Resolvers {
 	}
 
 	// lambda exp manages the checked exception, eh.. really ugly
-	public void resolve(InfoType it, int attribute_name_index, DataInput di,
-			int count) throws IOException {
+	public AttributeInfo resolve(InfoType it, int attribute_name_index, DataInput di) throws IOException {
 		if (it.equals(InfoType.ClassFile)) {
-			resolve(fieldsAttrResolvers, attribute_name_index, di);
+			return resolve(fieldsAttrResolvers, attribute_name_index, di);
 		} else if (it.equals(InfoType.field_info)) {
-			resolve(fieldsAttrResolvers, attribute_name_index, di);
+			return resolve(fieldsAttrResolvers, attribute_name_index, di);
 		} else if (it.equals(InfoType.method_info)) {
-			resolve(fieldsAttrResolvers, attribute_name_index, di);
+			return resolve(fieldsAttrResolvers, attribute_name_index, di);
 		} else if (it.equals(InfoType.Code)) {
-			resolve(fieldsAttrResolvers, attribute_name_index, di);
+			return resolve(fieldsAttrResolvers, attribute_name_index, di);
 		} else {
 			// impossible....
-			throw new RuntimeException("unknown type...");
+			return null;
 		}
 	}
 

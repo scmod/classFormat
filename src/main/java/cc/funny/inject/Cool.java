@@ -22,10 +22,9 @@ import org.apache.commons.lang3.ClassUtils;
 public class Cool {
 
 	private static final List<String> classNames = new ArrayList<>();
-	
+
 	private static boolean inited = false;
-	
-	
+
 	public static List<Class<?>> scan() {
 		ClassLoader cl = Thread.currentThread().getContextClassLoader();
 
@@ -49,12 +48,12 @@ public class Cool {
 		} catch (URISyntaxException | IOException e) {
 			e.printStackTrace();
 		}
-		return ClassUtils.convertClassNamesToClasses(classNames);
+		return convertClassNamesToClasses(classNames);
 	}
 
 	private static final Map<Class<?>, Object> CLASSPOOL = new HashMap<>();
 
-	public static void init(){
+	public static void init() {
 		List<Class<?>> list = scan();
 		int size = list.size();
 		for (int i = 0; i < size; i++) {
@@ -64,12 +63,12 @@ public class Cool {
 			for (int j = 0; j < length; j++) {
 				// get the fields to be inject
 				if (fields[j].getAnnotation(Inject.class) != null) {
-					//inject into List field...
+					// inject into List field...
 					if (List.class.isAssignableFrom(fields[j].getType())) {
 						fields[j].setAccessible(true);
 						Object instance = CLASSPOOL.get(clazz);
 						try {
-							if(instance == null) {
+							if (instance == null) {
 								instance = clazz.newInstance();
 								CLASSPOOL.put(clazz, instance);
 							}
@@ -118,11 +117,28 @@ public class Cool {
 
 	@SuppressWarnings("unchecked")
 	public static <T> T getBean(Class<T> clazz) {
-		if(!inited) {
+		if (!inited) {
 			init();
 			inited = true;
 		}
 		return (T) CLASSPOOL.get(clazz);
 	}
-	
+
+	private static List<Class<?>> convertClassNamesToClasses(
+			List<String> classNames) {
+		if (classNames == null) {
+			return null;
+		}
+		int size = classNames.size();
+		final List<Class<?>> classes = new ArrayList<Class<?>>(size);
+		//no class can escape..........
+		try {
+			for (int i = 0; i < size; i++) {
+				classes.add(Class.forName(classNames.get(i)));
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		return classes;
+	}
 }

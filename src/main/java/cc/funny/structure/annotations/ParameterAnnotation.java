@@ -1,8 +1,14 @@
-package cc.funny.structure;
+package cc.funny.structure.annotations;
 
 import java.util.List;
 
-public class RuntimeInvisibleAnnotationsAttribute extends AttributeInfo {
+/**
+ * similar to RuntimeAnnotation,but not a subclass of AttributeInfo
+ * 
+ * @author John Smith
+ *
+ */
+public class ParameterAnnotation {
 
 	private int num_annotations;// u2
 	private List<Annotation> annotations;

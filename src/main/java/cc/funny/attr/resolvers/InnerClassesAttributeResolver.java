@@ -4,10 +4,7 @@ import java.io.DataInput;
 import java.io.IOException;
 
 import cc.funny.structure.AttributeInfo;
-import cc.funny.structure.ConstantValueAttribute;
 import cc.funny.structure.InnerClassesAttribute;
-import cc.funny.structure.SourceFileAttribute;
-import cc.funny.structure.InnerClassesAttribute.ClassesInfo;
 
 public class InnerClassesAttributeResolver implements
 		ClassFileAttributeResolver {

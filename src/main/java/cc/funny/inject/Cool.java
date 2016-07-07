@@ -67,10 +67,12 @@ public class Cool {
 					//inject into List field...
 					if (List.class.isAssignableFrom(fields[j].getType())) {
 						fields[j].setAccessible(true);
-						Object instance = null;
+						Object instance = CLASSPOOL.get(clazz);
 						try {
-							instance = clazz.newInstance();
-							CLASSPOOL.put(clazz, instance);
+							if(instance == null) {
+								instance = clazz.newInstance();
+								CLASSPOOL.put(clazz, instance);
+							}
 							Class<?> c = getClass(list,
 									((ParameterizedType) fields[j]
 											.getGenericType())

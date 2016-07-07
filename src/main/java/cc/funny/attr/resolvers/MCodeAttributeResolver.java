@@ -59,11 +59,9 @@ public class MCodeAttributeResolver implements MethodInfoAttributeResolver {
 		List<AttributeInfo> list = null;
 		if (attributes_count > 0) {
 			list = new ArrayList<>();
-			Resolvers r = Cool.getBean(Resolvers.class);
-			int tmp_attribute_name_index = -1;
 			for (int i = 0; i < attributes_count; i++) {
-				tmp_attribute_name_index = di.readUnsignedShort();
-				list.add(r.resolve(InfoType.Code, tmp_attribute_name_index, di));
+				int inner_attribute_name_index = di.readUnsignedShort();
+				list.add(Cool.getBean(Resolvers.class).resolve(InfoType.Code, inner_attribute_name_index, di));
 			}
 		}
 		attr.setAttributes(list);

@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Modifier;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,7 +18,6 @@ import org.apache.commons.lang3.text.translate.LookupTranslator;
 import cc.funny.attr.Resolvers;
 import cc.funny.inject.Cool;
 import cc.funny.structure.ClassFile;
-import cc.funny.structure.InterfaceInfo;
 import cc.funny.type_value.TypeValue;
 import cc.funny.util.Utils;
 
@@ -70,26 +68,19 @@ public class TheClassFileFormat implements Serializable, Cloneable {
 		int fields_count = di.readUnsignedShort();
 		cf.setFieldsCount(fields_count);
 		cf.setFields(Utils.analyseFields(di, fields_count));
+		
+		int methods_count = di.readUnsignedShort();
+		cf.setMethodsCount(methods_count);
+		cf.setMethods(Utils.analyseMethods(di, methods_count));
+		
+		int attributes_count = di.readUnsignedShort();
+		cf.setAttributesCount(attributes_count);
+		cf.setAttributes(Utils.analyseClassFileAttributes(di, attributes_count));
+		
+		System.out.println(cf);
 	}
 
-	static String digFields(DataInput di, List<TypeValue<?>> context,
-			int fields_count) throws IOException {
-		StringBuilder sb = new StringBuilder();
-		if (fields_count > 0) {
-			for (int i = 0; i < fields_count; i++) {
-				sb.append("field[").append(i).append("] : \n");
-				sb.append("access_flags : ")
-						.append(Modifier.toString(di.readUnsignedShort()))
-						.append("\n");
-				sb.append("name_index : ")
-						.append(dig(context, di.readUnsignedShort()))
-						.append("descriptor_index : ")
-						.append(dig(context, di.readUnsignedShort()));
-				int attributes_count = di.readUnsignedShort();
-			}
-		}
-		return sb.toString();
-	}
+	
 
 	
 	private static final int ACC_PUBLIC = 0x0001;

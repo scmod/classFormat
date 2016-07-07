@@ -2,14 +2,16 @@ package cc.funny.util;
 
 import java.io.DataInput;
 import java.io.IOException;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import cc.funny.attr.resolvers.FieldInfoAttributeResolver;
-import cc.funny.inject.Inject;
+import cc.funny.attr.InfoType;
+import cc.funny.attr.Resolvers;
+import cc.funny.inject.Cool;
+import cc.funny.structure.AttributeInfo;
 import cc.funny.structure.FieldInfo;
 import cc.funny.structure.InterfaceInfo;
+import cc.funny.structure.MethodInfo;
 import cc.funny.type_value.TypeValue;
 import cc.funny.type_value.constantPool.CClass;
 import cc.funny.type_value.constantPool.CDouble;
@@ -41,8 +43,6 @@ public class Utils {
 	private static final int CONSTANT_MethodType = 16;
 	private static final int CONSTANT_InvokeDynamic = 18;
 
-	private static final int Ref = 22;
-
 	/**
 	 * read and make a list of constant pool
 	 * 
@@ -65,13 +65,19 @@ public class Utils {
 				context.add(new CClass(di.readUnsignedShort()));
 				break;
 
+			//is there any way to compress it
 			case CONSTANT_Fieldref:
 				tmp = new CFieldref();
+				tmp.setValue(di.readUnsignedShort(), di.readUnsignedShort());
+				context.add(tmp);
+				break;
 			case CONSTANT_Methodref:
 				tmp = new CMethodref();
+				tmp.setValue(di.readUnsignedShort(), di.readUnsignedShort());
+				context.add(tmp);
+				break;
 			case CONSTANT_InterfaceMethodref:
 				tmp = new CInterfaceMethodref();
-			case Ref:
 				tmp.setValue(di.readUnsignedShort(), di.readUnsignedShort());
 				context.add(tmp);
 				break;
@@ -132,14 +138,70 @@ public class Utils {
 		List<FieldInfo> list = null;
 		if (fields_count > 0) {
 			list = new ArrayList<>();
+
 			for (int i = 0; i < fields_count; i++) {
 				FieldInfo fi = new FieldInfo();
 				fi.setAccess_flags(di.readUnsignedShort());
 				fi.setName_index(di.readUnsignedShort());
 				fi.setDescriptor_index(di.readUnsignedShort());
 				int attributes_count = di.readUnsignedShort();
-				fi.setAttributes(null);
+				fi.setAttributes_count(attributes_count);
+				List<AttributeInfo> la = null;
+				if (attributes_count > 0) {
+					la = new ArrayList<>(attributes_count);
+					for (int j = 0; j < attributes_count; j++) {
+						int attribute_name_index = di.readUnsignedShort();
+						la.add(Cool.getBean(Resolvers.class).resolve(
+								InfoType.field_info, attribute_name_index, di));
+					}
+				}
+				fi.setAttributes(la);
 				list.add(fi);
+			}
+		}
+		return list;
+	}
+
+	public static List<MethodInfo> analyseMethods(DataInput di,
+			int methods_count) throws IOException {
+		List<MethodInfo> list = null;
+		if (methods_count > 0) {
+			list = new ArrayList<>();
+
+			for (int i = 0; i < methods_count; i++) {
+				MethodInfo mi = new MethodInfo();
+				mi.setAccess_flags(di.readUnsignedShort());
+				mi.setName_index(di.readUnsignedShort());
+				mi.setDescriptor_index(di.readUnsignedShort());
+
+				int attributes_count = di.readUnsignedShort();
+				mi.setAttributes_count(attributes_count);
+
+				List<AttributeInfo> la = null;
+				if (attributes_count > 0) {
+					la = new ArrayList<>(attributes_count);
+					for (int j = 0; j < attributes_count; j++) {
+						int attribute_name_index = di.readUnsignedShort();
+						la.add(Cool.getBean(Resolvers.class).resolve(
+								InfoType.method_info, attribute_name_index, di));
+					}
+				}
+				mi.setAttributes(la);
+				list.add(mi);
+			}
+		}
+		return list;
+	}
+	
+	public static List<AttributeInfo> analyseClassFileAttributes(DataInput di,
+			int attributes_count) throws IOException {
+		List<AttributeInfo> list = null;
+		if (attributes_count > 0) {
+			list = new ArrayList<>();
+			for (int i = 0; i < attributes_count; i++) {
+				int attribute_name_index = di.readUnsignedShort();
+				list.add(Cool.getBean(Resolvers.class).resolve(
+						InfoType.ClassFile, attribute_name_index, di));
 			}
 		}
 		return list;

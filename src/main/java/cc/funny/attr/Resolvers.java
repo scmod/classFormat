@@ -30,13 +30,13 @@ public class Resolvers {
 	// lambda exp manages the checked exception, eh.. really ugly
 	public AttributeInfo resolve(InfoType it, int attribute_name_index, DataInput di) throws IOException {
 		if (it.equals(InfoType.ClassFile)) {
-			return resolve(fieldsAttrResolvers, attribute_name_index, di);
+			return resolve(classFileAttrResolvers, attribute_name_index, di);
 		} else if (it.equals(InfoType.field_info)) {
 			return resolve(fieldsAttrResolvers, attribute_name_index, di);
 		} else if (it.equals(InfoType.method_info)) {
-			return resolve(fieldsAttrResolvers, attribute_name_index, di);
+			return resolve(methodsAttrResolvers, attribute_name_index, di);
 		} else if (it.equals(InfoType.Code)) {
-			return resolve(fieldsAttrResolvers, attribute_name_index, di);
+			return resolve(codeAttrResolvers, attribute_name_index, di);
 		} else {
 			// impossible....
 			return null;
@@ -51,6 +51,8 @@ public class Resolvers {
 				return resolvers.get(i).resolve(attribute_name_index, di);
 			}
 		}
+//		throw new RuntimeException("can't resolve where attribute_name_index = " + attribute_name_index);
+		//a class conform to the jvms8 will never return null....
 		return null;
 	}
 }

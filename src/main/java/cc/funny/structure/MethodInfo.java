@@ -3,10 +3,10 @@ package cc.funny.structure;
 import java.util.List;
 
 public class MethodInfo {
-	
+
 	private int access_flags;// u2
 	private int name_index;// u2
-	private int escriptor_index;// u2
+	private int descriptor_index;// u2
 	private int attributes_count;// u2
 	private List<AttributeInfo> attributes;
 
@@ -26,12 +26,12 @@ public class MethodInfo {
 		this.name_index = name_index;
 	}
 
-	public int getEscriptor_index() {
-		return escriptor_index;
+	public int getDescriptor_index() {
+		return descriptor_index;
 	}
 
-	public void setEscriptor_index(int escriptor_index) {
-		this.escriptor_index = escriptor_index;
+	public void setDescriptor_index(int descriptor_index) {
+		this.descriptor_index = descriptor_index;
 	}
 
 	public int getAttributes_count() {

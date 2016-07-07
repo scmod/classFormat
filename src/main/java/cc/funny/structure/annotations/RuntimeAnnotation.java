@@ -1,8 +1,10 @@
-package cc.funny.structure;
+package cc.funny.structure.annotations;
 
 import java.util.List;
 
-public class RuntimeVisibleParameterAnnotationsAttribute extends AttributeInfo {
+import cc.funny.structure.AttributeInfo;
+
+public class RuntimeAnnotation extends AttributeInfo {
 
 	private int num_annotations;// u2
 	private List<Annotation> annotations;
@@ -22,5 +24,5 @@ public class RuntimeVisibleParameterAnnotationsAttribute extends AttributeInfo {
 	public void setAnnotations(List<Annotation> annotations) {
 		this.annotations = annotations;
 	}
-
+	
 }

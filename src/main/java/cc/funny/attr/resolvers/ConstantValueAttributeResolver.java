@@ -3,7 +3,6 @@ package cc.funny.attr.resolvers;
 import java.io.DataInput;
 import java.io.IOException;
 
-import cc.funny.TheClassFileFormat;
 import cc.funny.structure.ConstantValueAttribute;
 
 public class ConstantValueAttributeResolver implements
